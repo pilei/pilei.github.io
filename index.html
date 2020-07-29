@@ -5,20 +5,20 @@
   
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Blog</title>
+  <link rel="dns-prefetch" href="https://pileiblog.cn">
+  <title>pilei</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="Boring">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Blog">
-<meta property="og:url" content="http://yoursite.com/index.html">
-<meta property="og:site_name" content="Blog">
+<meta property="og:title" content="pilei">
+<meta property="og:url" content="https://pileiblog.cn/index.html">
+<meta property="og:site_name" content="pilei">
 <meta property="og:description" content="Boring">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="Pi Lei">
 <meta name="twitter:card" content="summary">
   
-    <link rel="alternative" href="/atom.xml" title="Blog" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="pilei" type="application/atom+xml">
   
   
     <link rel="icon" href="/img/ico.jpg">
@@ -272,7 +272,7 @@ W F M_{i, f t}=\frac{\left|\mathbf{s}_{i, f t}\right|^{2}}{\sum_{j=1}^{C}\left|\
 <p><a href="https://www.zhihu.com/question/268773643/answer/343695781?utm_source=wechat_session&amp;utm_medium=social&amp;utm_oi=715829815940243456" target="_blank" rel="noopener">https://www.zhihu.com/question/268773643/answer/343695781?utm_source=wechat_session&amp;utm_medium=social&amp;utm_oi=715829815940243456</a></p>
 </blockquote>
 <p>因为这个问题我也不知道怎么写，所以看看上面大佬的回答，也可以去看李宏毅老师的视频，我觉得他在视频里讲的挺清楚的。</p>
-<h2 id="Deep-Clustering"><a href="#Deep-Clustering" class="headerlink" title="Deep Clustering"></a>Deep Clustering</h2><p><img src="/2020/07/29/7-29/1595988640(1" alt="DC">.png)</p>
+<h2 id="Deep-Clustering"><a href="#Deep-Clustering" class="headerlink" title="Deep Clustering"></a>Deep Clustering</h2><p><img src="/2020/07/29/7-29/1595988640.png" alt></p>
 <p>DC的主要思想是：通过将语音信号转换为时频表示（FFT or STFT），通过一个训练网络得到一个三维向量，即就是把一个网格通过训练网络得到一个向量，具体训练思想见下图，思想就是缩小同一个人时频单元的距离，扩大不同人的时频单元的距离。然后通过得到的嵌入向量进行K-means聚类（这里需要事先知道说话人的个数）然后将聚类的结果可以得到Mask进行语音分离。</p>
 <p><img src="/2020/07/29/7-29/1595989118.png" alt="DC2"></p>
 <h2 id="Permutation-Invariant-Training-PIT"><a href="#Permutation-Invariant-Training-PIT" class="headerlink" title="Permutation Invariant Training (PIT)"></a>Permutation Invariant Training (PIT)</h2><p><img src="/2020/07/29/7-29/1595989459.png" alt="PIT2"></p>
