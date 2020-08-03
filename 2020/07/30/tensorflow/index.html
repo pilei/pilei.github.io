@@ -6,18 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://pileiblog.cn">
-  <title>categories | pilei</title>
+  <title>一些可能用的上的小知识 | pilei</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Boring">
-<meta property="og:type" content="website">
-<meta property="og:title" content="categories">
-<meta property="og:url" content="https://pileiblog.cn/categories/index.html">
+  <meta name="description" content="记录一下">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一些可能用的上的小知识">
+<meta property="og:url" content="https://pileiblog.cn/2020/07/30/tensorflow/index.html">
 <meta property="og:site_name" content="pilei">
-<meta property="og:description" content="Boring">
+<meta property="og:description" content="记录一下">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-07-27T11:11:32.000Z">
-<meta property="article:modified_time" content="2020-07-27T11:11:32.578Z">
+<meta property="article:published_time" content="2020-07-29T17:48:49.000Z">
+<meta property="article:modified_time" content="2020-07-30T05:25:59.012Z">
 <meta property="article:author" content="Pi Lei">
+<meta property="article:tag" content="日常">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="pilei" type="application/atom+xml">
@@ -137,27 +138,31 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="page-" class="article article-type-page " itemscope itemprop="blogPost">
+            <article id="post-tensorflow" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      categories
+      一些可能用的上的小知识
     </h1>
   
 
         
-        <a href="/categories/index.html" class="archive-article-date">
-  	<time datetime="2020-07-27T11:11:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-27</time>
+        <a href="/2020/07/30/tensorflow/" class="archive-article-date">
+  	<time datetime="2020-07-29T17:48:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-30</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h1 id="tf-logging"><a href="#tf-logging" class="headerlink" title="tf.logging"></a>tf.logging</h1><p>tensorflow2.0 中移除了这个功能</p>
+<p>在前面加compat.v1吧，还没有发现具体的包代替这个方法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tf.logging &gt; tf.compat.v1.logging</span><br></pre></td></tr></table></figure>
+<h1 id="python-matplotlib-pyplot的一些知识"><a href="#python-matplotlib-pyplot的一些知识" class="headerlink" title="python matplotlib.pyplot的一些知识"></a>python matplotlib.pyplot的一些知识</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">x = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">7</span>,<span class="number">7</span>]</span><br><span class="line">y = [<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>]</span><br><span class="line">lables = [<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>]</span><br><span class="line"><span class="comment">#print(int(lables))</span></span><br><span class="line">color = [<span class="string">'r'</span>,<span class="string">'g'</span>]</span><br><span class="line">label1 = [<span class="string">'niubi'</span>,<span class="string">'niubi2'</span>]</span><br><span class="line">scatter = plt.scatter(x,y,c=lables,cmap=<span class="string">'coolwarm'</span>)</span><br><span class="line"><span class="comment">#plt.scatter(m,n,c=color[1],marker='+',label = 'niubi2')</span></span><br><span class="line">plt.legend(handles = scatter.legend_elements()[<span class="number">0</span>],labels = label1)</span><br><span class="line">plt.plot()</span><br></pre></td></tr></table></figure>
+
       
 
       
@@ -191,7 +196,29 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">日常</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/日常//" class="article-tag-list-link color3">日常</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
 
@@ -241,7 +268,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=https://pileiblog.cn/categories/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=https://pileiblog.cn/2020/07/30/tensorflow/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -253,6 +280,25 @@
 </article>
 
   
+<nav id="article-nav">
+  
+    <a href="/2020/08/02/DeepClustering/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Deep Clustering
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/07/29/PiLei/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">PiLei</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -275,7 +321,7 @@
   
   <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="" data-title="categories" data-url="https://pileiblog.cn/categories/index.html"></div>
+	<div class="ds-thread" data-thread-key="tensorflow" data-title="一些可能用的上的小知识" data-url="https://pileiblog.cn/2020/07/30/tensorflow/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
@@ -298,8 +344,8 @@
   <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
 <script>
   var cloudTieConfig = {
-    url: "https://pileiblog.cn/categories/index.html", 
-    sourceId: "",
+    url: "https://pileiblog.cn/2020/07/30/tensorflow/", 
+    sourceId: "tensorflow",
     productKey: "flase",
     target: "cloud-tie-wrapper"
   };
@@ -362,7 +408,7 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,

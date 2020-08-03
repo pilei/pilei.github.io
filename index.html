@@ -59,7 +59,7 @@
 			
 				<li><a href="/">傻逼才会看这个Blog</a></li>
 	        
-		总文章数 2
+		总文章数 5
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
@@ -137,6 +137,441 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-TasNet" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/03/TasNet/">TasNet</a>
+    </h1>
+  
+
+        
+        <a href="/2020/08/03/TasNet/" class="archive-article-date">
+  	<time datetime="2020-08-03T00:49:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-08-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="TASNET-TIME-DOMAIN-AUDIO-SEPARATION-NETWORK-FOR-REAL-TIME-SINGLE-CHANNEL-SPEECH-SEPARATION-论文阅读"><a href="#TASNET-TIME-DOMAIN-AUDIO-SEPARATION-NETWORK-FOR-REAL-TIME-SINGLE-CHANNEL-SPEECH-SEPARATION-论文阅读" class="headerlink" title="TASNET: TIME-DOMAIN AUDIO SEPARATION NETWORK FOR REAL-TIME,SINGLE-CHANNEL SPEECH SEPARATION 论文阅读"></a>TASNET: TIME-DOMAIN AUDIO SEPARATION NETWORK FOR REAL-TIME,SINGLE-CHANNEL SPEECH SEPARATION 论文阅读</h1><h2 id="以往一些算法存在的问题"><a href="#以往一些算法存在的问题" class="headerlink" title="以往一些算法存在的问题"></a>以往一些算法存在的问题</h2><ol>
+<li>在实时、短延迟应用程序上具有挑战性</li>
+</ol>
+<p>在STFT域中有效的语音分离需要高频分辨率，这导致相对较大的时间窗口长度，对于语音通常大于32毫秒，对于音乐分离通常大于90毫秒。 因为系统的最小等待时间受STFT时间窗口的长度限制，所以当需要非常短的等待时间时（例如在电信系统或可监听设备中），这限制了此类系统的使用。</p>
+<ol>
+<li>时频分解还存在相位/幅度解耦和长时间窗等固有问题，需要获得足够的频率分辨率。</li>
+<li>为什么使用STFT，STFT是最好的么？？？（有待解答）但是STFT将信号转换为一个复杂的tf-domain，分离算法需要同时处理信号的幅值和相位。</li>
+</ol>
+<h2 id="TasNet"><a href="#TasNet" class="headerlink" title="TasNet"></a>TasNet</h2><p>TasNet能有效的解决上述问题。该方法消除了频率分解步骤，减少了编码器输出信号中估计源掩模的分离问题，然后由解码器合成。我们的系统优于目前最先进的causal和noncausal语音分离算法，降低了语音分离的计算成本，并大大降低了输出所需的最小延迟。</p>
+<h2 id="TasNet模型"><a href="#TasNet模型" class="headerlink" title="TasNet模型"></a>TasNet模型</h2><p>直接在time-domain上面建模。</p>
+<p><img src="/2020/08/03/TasNet/image-20200803130310101.png" alt="TasNet"></p>
+<h3 id="Problem-formulation"><a href="#Problem-formulation" class="headerlink" title="Problem formulation"></a>Problem formulation</h3><p>clean sources signal: $ s<em>{1}(t), \ldots, s</em>{c}(t)$ ，$C$为源信号的个数，一般为2</p>
+<p>mixture signal: $ x(t)=\sum<em>{i=1}^{C} s</em>{i}(t)$</p>
+<p>将mixture和clean sources分割成长度为$L$的segment，一共$K$段</p>
+<script type="math/tex; mode=display">
+\left\{\begin{array}{l}
+\mathbf{x}_{k}=x(t) \\
+\mathbf{s}_{i, k}=s_{i}(t)
+\end{array} \quad t \in[k L,(k+1) L), k=1,2, \ldots, K\right.</script><script type="math/tex; mode=display">
+\mathbf{x}_{k} \in \mathbb{R}^{1 \times L}</script><p>mixture和clean source的每个部分都可以用$ N $基本信号的非负加权和表示，$\mathbf{B}=   \left[\mathbf{b}<em>{1}, \mathbf{b}</em>{2}, \ldots, \mathbf{b}_{N}\right] \in \mathbb{R}^{N \times L} $</p>
+<script type="math/tex; mode=display">
+\left\{\begin{array}{l}
+\mathrm{x}=\mathrm{wB} \\
+\mathrm{s}_{i}=\mathrm{d}_{i} \mathrm{B}
+\end{array}\right.</script><p>where $ \mathbf{w} \in \mathbb{R}^{1 \times N}$  is the mixture weight vector, and  $\mathbf{d}_{i} \in \mathbb{R}^{1 \times N} $ is the weight vector for the source  $i$ . </p>
+<script type="math/tex; mode=display">
+\mathbf{w}=\sum_{i=1}^{C} \mathbf{d}_{i}</script><script type="math/tex; mode=display">
+\begin{aligned}
+\mathbf{w}=\sum_{i=1}^{C} \mathbf{w} \odot\left(\mathbf{d}_{i} \oslash \mathbf{w}\right) &:=\mathbf{w} \odot \sum_{i=1}^{C} \mathbf{m}_{i} \\
+\mathbf{d}_{i} &=\mathbf{m}_{i} \odot \mathbf{w}
+\end{aligned}</script><p>where  $\mathbf{m}_{i} \in \mathbb{R}^{1 \times N} $ represents the relative contribution source $ i$  to the mixture weight matrix, and $ \odot$  and  $\oslash  $ denotes element-wise multiplication and division.</p>
+<h3 id="Network-design"><a href="#Network-design" class="headerlink" title="Network design"></a>Network design</h3><h4 id="Encoder"><a href="#Encoder" class="headerlink" title="Encoder"></a>Encoder</h4><p>段$k$的非负混合权值$w_{k}$的估计是由一个1-D门控卷积层($\text{gated convolutional layer}$)完成的</p>
+<p>什么是$\text{gated convolutional layer}$ ？？？</p>
+<p><img src="/2020/08/03/TasNet/image-20200803133300649.png" alt="image-20200803133300649"></p>
+<script type="math/tex; mode=display">
+\mathbf{w}_{k}=\operatorname{ReLU}\left(\mathrm{x}_{k} \otimes \mathbf{U}） \odot \sigma\left(\mathbf{x}_{k} \otimes  \mathbf{V}\right), \quad k=1,2, \ldots, K\right.</script><p>$\otimes$卷积操作</p>
+<p>where $ \mathbf{U} \in \mathbb{R}^{N \times L} $ and $ \mathbf{V} \in \mathbb{R}^{N \times L}$  are $ N$  vectors with length  $L$,  and  $\mathbf{w}_{k} \in \mathbb{R}^{1 \times N}$  is the mixture weight vector.  $\sigma  $ denotes the Sigmoid activation function</p>
+<p>传入卷积层的时候还需要对$x_{k}$ 进行$L^{2}$归一化。</p>
+<h4 id="Separation"><a href="#Separation" class="headerlink" title="Separation"></a>Separation</h4><p>使用$LSTM$网络对源掩码进行估算，以对$K$段之间的时间依赖性进行建模，然后在具有$Softmax$激活功能的全连接层上生成掩码。</p>
+<p>$input: \text { mixture weight vectors } \mathbf{w}<em>{1}, \ldots \mathbf{w}</em>{K} \in \mathbb{R}^{1 \times N}$</p>
+<p>$output: \text{source  $i$  is  $K$  mask vectors }  \mathbf{m}<em>{i, 1}, \ldots, \mathbf{m}</em>{i, K} \in   \mathbb{R}^{1 \times N} .$</p>
+<p>要对$w_{k}$进行归一化：</p>
+<script type="math/tex; mode=display">
+\begin{array}{l}
+\hat{\mathbf{w}}_{k}=\frac{\mathbf{g}}{\sigma} \odot\left(\mathbf{w}_{k}-\mu\right)+\mathbf{b}, \quad k=1,2, \ldots, K \\
+\mu=\frac{1}{N} \sum_{j=1}^{N} \mathbf{w}_{k, j }\quad \sigma=\sqrt{\frac{1}{N} \sum_{j=1}^{N}\left(\mathbf{w}_{k, j}-\mu\right)^{2}}
+\end{array}</script><h4 id="Decoder"><a href="#Decoder" class="headerlink" title="Decoder"></a>Decoder</h4><script type="math/tex; mode=display">
+\mathbf{M}_{i}=\left[\mathbf{m}_{i, 1}, \ldots, \mathbf{m}_{i, K}\right] \in \mathbb{R}^{K \times N} \\ \hat{\mathbf{W}}= \left[\hat{\mathbf{w}}_{1}, \ldots, \hat{\mathbf{w}}_{K}\right] \in \mathbb{R}^{K \times N}\\
+\mathbf{D}_{i}=\left[\mathbf{d}_{i, 1}, \ldots, \mathbf{d}_{i, K}\right] \in \mathbb{R}^{K \times N}</script><script type="math/tex; mode=display">
+\mathbf{D}_{i}=\mathbf{W} \odot \mathbf{M}_{i}\\
+\mathbf{W}= \left[\mathbf{w}_{1}, \ldots, \mathbf{w}_{K}\right] \in \mathbb{R}^{K \times N}\\</script><p>记住这里的$\mathbf{M}<em>{i}$是作用在$\mathbf{W}$上，而不是$\hat{\mathbf{W}}$。我们缩放恢复的信号以逆转$L^{2}$归一化的影响。 将所有段的$x</em>{k}$恢复并串联在一起，可为每个信号源重建整个信号。</p>
+<script type="math/tex; mode=display">
+\mathbf{S}_{i}=\mathbf{D}_{i} \mathbf{B}\\
+s_{i}(t)=\left[\mathbf{S}_{i, k}\right], \quad k=1,2, \ldots, K</script><h4 id="Training-objective"><a href="#Training-objective" class="headerlink" title="Training objective"></a>Training objective</h4><p>SI-SNR(SI-SDR)</p>
+<script type="math/tex; mode=display">
+\begin{array}{c}
+\text { s }_{\text {target}}=\frac{\langle\hat{\mathbf{s}}, \mathbf{s}\rangle \mathbf{s}}{\|\mathbf{s}\|^{2}} \\
+\mathbf{e}_{\text {noise}}=\hat{\mathbf{s}}-\mathbf{s}_{\text {target}} \\
+\text {SI-SNR }:=10 \log _{10} \frac{\| \mathbf{s}_{\text {target}}\|}{\left\|\mathbf{e}_{\text {noise}}\right\|^{2}}
+\end{array}</script><p>$\text{where }  \hat{\mathbf{s}} \in \mathbb{R}^{1 \times t}  \text{ and }  \mathbf{s} \in \mathbb{R}^{1 \times t}  \text{ are the estimated and target clean sources respectively}, \text{ $t$  denotes the length of the signals.}$</p>
+<h2 id="论文地址"><a href="#论文地址" class="headerlink" title="论文地址"></a>论文地址</h2><blockquote>
+<p><a href="https://arxiv.org/pdf/1711.00541.pdf" target="_blank" rel="noopener">https://arxiv.org/pdf/1711.00541.pdf</a></p>
+</blockquote>
+<h2 id="代码地址"><a href="#代码地址" class="headerlink" title="代码地址"></a>代码地址</h2><blockquote>
+<p><a href="https://github.com/JusperLee/Conv-TasNet" target="_blank" rel="noopener">https://github.com/JusperLee/Conv-TasNet</a></p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">speech separation</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/TasNet//" class="article-tag-list-link color2">TasNet</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/08/03/TasNet/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+
+
+<section id="comments" class="comments">
+  <style>
+    .comments{margin:30px;padding:10px;background:#fff}
+    @media screen and (max-width:800px){.comments{margin:auto;padding:10px;background:#fff}}
+  </style>
+  <div id="vcomment" class="comment"></div> 
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+   var notify = 'true' == true ? true : false;
+   var verify = 'false' == true ? true : false;
+    window.onload = function() {
+        new Valine({
+            el: '.comment',
+            notify: notify,
+            verify: verify,
+            app_id: "NYFbQQ2UQpUdlfBfMObXmYiM-gzGzoHsz",
+            app_key: "FzeKxyVJBHeS7LCGeM3zhOEe",
+            placeholder: "Just go go",
+            avatar:"mm"
+        });
+    }
+</script>
+  </section>
+
+
+  
+    <article id="post-DeepClustering" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/02/DeepClustering/">Deep Clustering</a>
+    </h1>
+  
+
+        
+        <a href="/2020/08/02/DeepClustering/" class="archive-article-date">
+  	<time datetime="2020-08-02T10:45:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-08-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Deep-clustering-Discriminative-embeddings-for-segmentation-and-separation-论文阅读"><a href="#Deep-clustering-Discriminative-embeddings-for-segmentation-and-separation-论文阅读" class="headerlink" title="Deep clustering: Discriminative embeddings for segmentation and separation 论文阅读"></a>Deep clustering: Discriminative embeddings for segmentation and separation 论文阅读</h1><blockquote>
+<p><a href="https://www.merl.com/demos/deep-clustering" target="_blank" rel="noopener">https://www.merl.com/demos/deep-clustering</a></p>
+</blockquote>
+<p><img src="/2020/08/02/DeepClustering/1595988640.png" alt></p>
+<h3 id="主要流程是首先对输入信号-X-进行数据预处理"><a href="#主要流程是首先对输入信号-X-进行数据预处理" class="headerlink" title="主要流程是首先对输入信号$X$进行数据预处理"></a>主要流程是首先对输入信号$X$进行数据预处理</h3><p>8khz的采样频率，输入特征$X$为混合语音的对数谱幅值，使用短时间傅里叶变换(STFT)计算，其窗口长度为32 ms，窗口位移为8ms，并取hann窗口的平方根。</p>
+<p>为保证局部一致性，将混合后的数据分别处理为100帧的半重叠段，大致相当于语音中一个词的长度，并根据所提出的模型输出嵌入$V$。</p>
+<p>预处理这部分非常重要。</p>
+<h3 id="模型网络搭建"><a href="#模型网络搭建" class="headerlink" title="模型网络搭建"></a>模型网络搭建</h3><p>主要是使用BLSTM和其他层(FC等等)，网络搭建其实不难，主要是里面参数的选择，以及层次数量这些都需要实验。训练的损失函数公式具体看论文。具体思路就是，将同一类的距离缩小，扩大不同类的距离。</p>
+<p>Raw input signal  $X<em>{i}=g</em>{i}(x), i \in {1, \ldots, N }$</p>
+<p>D-dimensional embedding : $V=f_{\theta}(x) \in \mathbb{R}^{N \times D}$</p>
+<p>Unit-norm embedding: $\left|v<em>{i}\right|^{2}=1$ where $ v</em>{i}=\left{v<em>{i, d}\right}$  and $ v</em>{i, d} $ is the value of the d-th dimension of the embedding for element $i$.</p>
+<p>The target partition is represented by the indicator  $Y=\left{y<em>{i, c}\right}$, mapping each element  $i $ to each of  $C $ clusters, so that  $y</em>{i, c}=1$  if element $ i $ is in cluster $ c$ .</p>
+<p>We can learn affinity matrix  $V V^{T}$,  as a function of the inputs,  $X$  to match the affinities,  $Y Y^{T}$ , by minimizing, with respect to $ V=   f_{\theta}(X)$,  the training cost function,</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\mathcal{C}_{Y}(V) &=\left\|V V^{T}-Y Y^{T}\right\|_{\mathrm{F}}^{2}=\sum_{i, j}\left(\left\langle v_{i}, v_{j}\right\rangle-\left\langle y_{i}, y_{j}\right\rangle\right)^{2} \\
+&=\sum_{i, j: y_{i}=y_{j}}\left(\left|v_{i}-v_{j}\right|^{2}-1\right)+\sum_{i, j}\left\langle v_{i}, v_{j}\right\rangle^{2}
+\end{aligned}\tag1</script><p>summed over training examples, where  $|A|<em>{\mathrm{F}}^{2}$  is the squared Frobenius norm. For the true cluster labels $\widetilde{Y}$ , $\mathcal{C}</em>{\widetilde{Y}}(V)$  minimizes the distance between the estimated affinity matrix  $V V^{T}$  and the ideal affinity matrix $ \widetilde{Y} \widetilde{Y}^{T}$ . The form (2) pulls the embeddings  $v<em>{i}$  and  $v</em>{j}$  closer together for elements within the same partition, whereas the second term pushes all elements apart, preventing collapse to a trivial solution.</p>
+<script type="math/tex; mode=display">
+\mathcal{C}_{Y}(V)=\left\|V^{T} V\right\|_{F}^{2}-2\left\|V^{T} Y\right\|_{F}^{2}+\left\|Y^{T} Y\right\|_{F}^{2}\tag2</script><script type="math/tex; mode=display">
+\frac{\partial \mathcal{C}_{Y}(V)}{\partial V^{T}}=4 V\left(V^{T} V\right)-4 Y\left(Y^{T} V\right)\tag3</script><h3 id="分离和评估"><a href="#分离和评估" class="headerlink" title="分离和评估"></a>分离和评估</h3><p>K-means聚类（有论文写了其他的方法，这应该是最原始的方式）将embedding向量进行聚类，然后根据聚类结果可以得到估计的Mask，通过源信号和Mask相乘得到估计的源信号。评估用SDR和SI-SNR(SI-SDR)都可以评估。</p>
+<h3 id="论文地址"><a href="#论文地址" class="headerlink" title="论文地址"></a>论文地址</h3><blockquote>
+<p><a href="https://arxiv.org/pdf/1508.04306" target="_blank" rel="noopener">https://arxiv.org/pdf/1508.04306</a> </p>
+<p>or</p>
+<p><a href="https://www.merl.com/publications/docs/TR2016-003.pdf" target="_blank" rel="noopener">https://www.merl.com/publications/docs/TR2016-003.pdf</a></p>
+</blockquote>
+<h3 id="代码地址"><a href="#代码地址" class="headerlink" title="代码地址"></a>代码地址</h3><blockquote>
+<p><a href="https://github.com/JusperLee/Deep-Clustering-for-Speech-Separation" target="_blank" rel="noopener">https://github.com/JusperLee/Deep-Clustering-for-Speech-Separation</a></p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">speech separation</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Deep-Clustering//" class="article-tag-list-link color1">Deep Clustering</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/08/02/DeepClustering/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+
+
+<section id="comments" class="comments">
+  <style>
+    .comments{margin:30px;padding:10px;background:#fff}
+    @media screen and (max-width:800px){.comments{margin:auto;padding:10px;background:#fff}}
+  </style>
+  <div id="vcomment" class="comment"></div> 
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+   var notify = 'true' == true ? true : false;
+   var verify = 'false' == true ? true : false;
+    window.onload = function() {
+        new Valine({
+            el: '.comment',
+            notify: notify,
+            verify: verify,
+            app_id: "NYFbQQ2UQpUdlfBfMObXmYiM-gzGzoHsz",
+            app_key: "FzeKxyVJBHeS7LCGeM3zhOEe",
+            placeholder: "Just go go",
+            avatar:"mm"
+        });
+    }
+</script>
+  </section>
+
+
+  
+    <article id="post-tensorflow" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/07/30/tensorflow/">一些可能用的上的小知识</a>
+    </h1>
+  
+
+        
+        <a href="/2020/07/30/tensorflow/" class="archive-article-date">
+  	<time datetime="2020-07-29T17:48:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="tf-logging"><a href="#tf-logging" class="headerlink" title="tf.logging"></a>tf.logging</h1><p>tensorflow2.0 中移除了这个功能</p>
+<p>在前面加compat.v1吧，还没有发现具体的包代替这个方法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tf.logging &gt; tf.compat.v1.logging</span><br></pre></td></tr></table></figure>
+<h1 id="python-matplotlib-pyplot的一些知识"><a href="#python-matplotlib-pyplot的一些知识" class="headerlink" title="python matplotlib.pyplot的一些知识"></a>python matplotlib.pyplot的一些知识</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">x = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">7</span>,<span class="number">7</span>]</span><br><span class="line">y = [<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>]</span><br><span class="line">lables = [<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>]</span><br><span class="line"><span class="comment">#print(int(lables))</span></span><br><span class="line">color = [<span class="string">'r'</span>,<span class="string">'g'</span>]</span><br><span class="line">label1 = [<span class="string">'niubi'</span>,<span class="string">'niubi2'</span>]</span><br><span class="line">scatter = plt.scatter(x,y,c=lables,cmap=<span class="string">'coolwarm'</span>)</span><br><span class="line"><span class="comment">#plt.scatter(m,n,c=color[1],marker='+',label = 'niubi2')</span></span><br><span class="line">plt.legend(handles = scatter.legend_elements()[<span class="number">0</span>],labels = label1)</span><br><span class="line">plt.plot()</span><br></pre></td></tr></table></figure>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">日常</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/日常//" class="article-tag-list-link color3">日常</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/07/30/tensorflow/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+
+
+<section id="comments" class="comments">
+  <style>
+    .comments{margin:30px;padding:10px;background:#fff}
+    @media screen and (max-width:800px){.comments{margin:auto;padding:10px;background:#fff}}
+  </style>
+  <div id="vcomment" class="comment"></div> 
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+   var notify = 'true' == true ? true : false;
+   var verify = 'false' == true ? true : false;
+    window.onload = function() {
+        new Valine({
+            el: '.comment',
+            notify: notify,
+            verify: verify,
+            app_id: "NYFbQQ2UQpUdlfBfMObXmYiM-gzGzoHsz",
+            app_key: "FzeKxyVJBHeS7LCGeM3zhOEe",
+            placeholder: "Just go go",
+            avatar:"mm"
+        });
+    }
+</script>
+  </section>
+
+
+  
     <article id="post-PiLei" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -157,7 +592,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="/2020/07/29/PiLei/1.jpg" alt="1"></p>
+        <p><img src="/2020/07/29/PiLei/1.jpg" alt="pilei"></p>
 
       
 
@@ -267,7 +702,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">单通道语音分离</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">speech separation</a>
         		</li>
       		
 		</ul>
@@ -279,7 +714,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/speech-separation//" class="article-tag-list-link color3">speech separation</a>
+        			<a href="/categories/单通道语音分离//" class="article-tag-list-link color3">单通道语音分离</a>
         		</li>
       		
 		</ul>
@@ -453,7 +888,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">单通道语音分离</a>
+                <a href="javascript:void(0)" class="js-tag color3">日常</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">speech separation</a>
               </li>
             
             <div class="clearfix"></div>
@@ -506,6 +945,10 @@ MathJax.Hub.Queue(function() {
           
             <li class="search-li">
               <a href="https://www.junjianli.cn/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>狗儿子的Blog</a>
+            </li>
+          
+            <li class="search-li">
+              <a href="https://blog.csdn.net/qq_30129009" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>狗儿子的CSDN</a>
             </li>
           
         </ul>

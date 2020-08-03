@@ -6,19 +6,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://pileiblog.cn">
-  <title>categories | pilei</title>
+  <title>TasNet | pilei</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Boring">
-<meta property="og:type" content="website">
-<meta property="og:title" content="categories">
-<meta property="og:url" content="https://pileiblog.cn/categories/index.html">
+  <meta name="description" content="论文阅读">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TasNet">
+<meta property="og:url" content="https://pileiblog.cn/2020/08/03/TasNet/index.html">
 <meta property="og:site_name" content="pilei">
-<meta property="og:description" content="Boring">
+<meta property="og:description" content="论文阅读">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-07-27T11:11:32.000Z">
-<meta property="article:modified_time" content="2020-07-27T11:11:32.578Z">
+<meta property="og:image" content="https://pileiblog.cn/2020/08/03/TasNet/image-20200803130310101.png">
+<meta property="og:image" content="https://pileiblog.cn/2020/08/03/TasNet/image-20200803133300649.png">
+<meta property="article:published_time" content="2020-08-03T00:49:46.000Z">
+<meta property="article:modified_time" content="2020-08-03T06:04:14.500Z">
 <meta property="article:author" content="Pi Lei">
+<meta property="article:tag" content="speech separation">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pileiblog.cn/2020/08/03/TasNet/image-20200803130310101.png">
   
     <link rel="alternative" href="/atom.xml" title="pilei" type="application/atom+xml">
   
@@ -137,27 +141,93 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="page-" class="article article-type-page " itemscope itemprop="blogPost">
+            <article id="post-TasNet" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      categories
+      TasNet
     </h1>
   
 
         
-        <a href="/categories/index.html" class="archive-article-date">
-  	<time datetime="2020-07-27T11:11:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-27</time>
+        <a href="/2020/08/03/TasNet/" class="archive-article-date">
+  	<time datetime="2020-08-03T00:49:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-08-03</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h1 id="TASNET-TIME-DOMAIN-AUDIO-SEPARATION-NETWORK-FOR-REAL-TIME-SINGLE-CHANNEL-SPEECH-SEPARATION-论文阅读"><a href="#TASNET-TIME-DOMAIN-AUDIO-SEPARATION-NETWORK-FOR-REAL-TIME-SINGLE-CHANNEL-SPEECH-SEPARATION-论文阅读" class="headerlink" title="TASNET: TIME-DOMAIN AUDIO SEPARATION NETWORK FOR REAL-TIME,SINGLE-CHANNEL SPEECH SEPARATION 论文阅读"></a>TASNET: TIME-DOMAIN AUDIO SEPARATION NETWORK FOR REAL-TIME,SINGLE-CHANNEL SPEECH SEPARATION 论文阅读</h1><h2 id="以往一些算法存在的问题"><a href="#以往一些算法存在的问题" class="headerlink" title="以往一些算法存在的问题"></a>以往一些算法存在的问题</h2><ol>
+<li>在实时、短延迟应用程序上具有挑战性</li>
+</ol>
+<p>在STFT域中有效的语音分离需要高频分辨率，这导致相对较大的时间窗口长度，对于语音通常大于32毫秒，对于音乐分离通常大于90毫秒。 因为系统的最小等待时间受STFT时间窗口的长度限制，所以当需要非常短的等待时间时（例如在电信系统或可监听设备中），这限制了此类系统的使用。</p>
+<ol>
+<li>时频分解还存在相位/幅度解耦和长时间窗等固有问题，需要获得足够的频率分辨率。</li>
+<li>为什么使用STFT，STFT是最好的么？？？（有待解答）但是STFT将信号转换为一个复杂的tf-domain，分离算法需要同时处理信号的幅值和相位。</li>
+</ol>
+<h2 id="TasNet"><a href="#TasNet" class="headerlink" title="TasNet"></a>TasNet</h2><p>TasNet能有效的解决上述问题。该方法消除了频率分解步骤，减少了编码器输出信号中估计源掩模的分离问题，然后由解码器合成。我们的系统优于目前最先进的causal和noncausal语音分离算法，降低了语音分离的计算成本，并大大降低了输出所需的最小延迟。</p>
+<h2 id="TasNet模型"><a href="#TasNet模型" class="headerlink" title="TasNet模型"></a>TasNet模型</h2><p>直接在time-domain上面建模。</p>
+<p><img src="/2020/08/03/TasNet/image-20200803130310101.png" alt="TasNet"></p>
+<h3 id="Problem-formulation"><a href="#Problem-formulation" class="headerlink" title="Problem formulation"></a>Problem formulation</h3><p>clean sources signal: $ s<em>{1}(t), \ldots, s</em>{c}(t)$ ，$C$为源信号的个数，一般为2</p>
+<p>mixture signal: $ x(t)=\sum<em>{i=1}^{C} s</em>{i}(t)$</p>
+<p>将mixture和clean sources分割成长度为$L$的segment，一共$K$段</p>
+<script type="math/tex; mode=display">
+\left\{\begin{array}{l}
+\mathbf{x}_{k}=x(t) \\
+\mathbf{s}_{i, k}=s_{i}(t)
+\end{array} \quad t \in[k L,(k+1) L), k=1,2, \ldots, K\right.</script><script type="math/tex; mode=display">
+\mathbf{x}_{k} \in \mathbb{R}^{1 \times L}</script><p>mixture和clean source的每个部分都可以用$ N $基本信号的非负加权和表示，$\mathbf{B}=   \left[\mathbf{b}<em>{1}, \mathbf{b}</em>{2}, \ldots, \mathbf{b}_{N}\right] \in \mathbb{R}^{N \times L} $</p>
+<script type="math/tex; mode=display">
+\left\{\begin{array}{l}
+\mathrm{x}=\mathrm{wB} \\
+\mathrm{s}_{i}=\mathrm{d}_{i} \mathrm{B}
+\end{array}\right.</script><p>where $ \mathbf{w} \in \mathbb{R}^{1 \times N}$  is the mixture weight vector, and  $\mathbf{d}_{i} \in \mathbb{R}^{1 \times N} $ is the weight vector for the source  $i$ . </p>
+<script type="math/tex; mode=display">
+\mathbf{w}=\sum_{i=1}^{C} \mathbf{d}_{i}</script><script type="math/tex; mode=display">
+\begin{aligned}
+\mathbf{w}=\sum_{i=1}^{C} \mathbf{w} \odot\left(\mathbf{d}_{i} \oslash \mathbf{w}\right) &:=\mathbf{w} \odot \sum_{i=1}^{C} \mathbf{m}_{i} \\
+\mathbf{d}_{i} &=\mathbf{m}_{i} \odot \mathbf{w}
+\end{aligned}</script><p>where  $\mathbf{m}_{i} \in \mathbb{R}^{1 \times N} $ represents the relative contribution source $ i$  to the mixture weight matrix, and $ \odot$  and  $\oslash  $ denotes element-wise multiplication and division.</p>
+<h3 id="Network-design"><a href="#Network-design" class="headerlink" title="Network design"></a>Network design</h3><h4 id="Encoder"><a href="#Encoder" class="headerlink" title="Encoder"></a>Encoder</h4><p>段$k$的非负混合权值$w_{k}$的估计是由一个1-D门控卷积层($\text{gated convolutional layer}$)完成的</p>
+<p>什么是$\text{gated convolutional layer}$ ？？？</p>
+<p><img src="/2020/08/03/TasNet/image-20200803133300649.png" alt="image-20200803133300649"></p>
+<script type="math/tex; mode=display">
+\mathbf{w}_{k}=\operatorname{ReLU}\left(\mathrm{x}_{k} \otimes \mathbf{U}） \odot \sigma\left(\mathbf{x}_{k} \otimes  \mathbf{V}\right), \quad k=1,2, \ldots, K\right.</script><p>$\otimes$卷积操作</p>
+<p>where $ \mathbf{U} \in \mathbb{R}^{N \times L} $ and $ \mathbf{V} \in \mathbb{R}^{N \times L}$  are $ N$  vectors with length  $L$,  and  $\mathbf{w}_{k} \in \mathbb{R}^{1 \times N}$  is the mixture weight vector.  $\sigma  $ denotes the Sigmoid activation function</p>
+<p>传入卷积层的时候还需要对$x_{k}$ 进行$L^{2}$归一化。</p>
+<h4 id="Separation"><a href="#Separation" class="headerlink" title="Separation"></a>Separation</h4><p>使用$LSTM$网络对源掩码进行估算，以对$K$段之间的时间依赖性进行建模，然后在具有$Softmax$激活功能的全连接层上生成掩码。</p>
+<p>$input: \text { mixture weight vectors } \mathbf{w}<em>{1}, \ldots \mathbf{w}</em>{K} \in \mathbb{R}^{1 \times N}$</p>
+<p>$output: \text{source  $i$  is  $K$  mask vectors }  \mathbf{m}<em>{i, 1}, \ldots, \mathbf{m}</em>{i, K} \in   \mathbb{R}^{1 \times N} .$</p>
+<p>要对$w_{k}$进行归一化：</p>
+<script type="math/tex; mode=display">
+\begin{array}{l}
+\hat{\mathbf{w}}_{k}=\frac{\mathbf{g}}{\sigma} \odot\left(\mathbf{w}_{k}-\mu\right)+\mathbf{b}, \quad k=1,2, \ldots, K \\
+\mu=\frac{1}{N} \sum_{j=1}^{N} \mathbf{w}_{k, j }\quad \sigma=\sqrt{\frac{1}{N} \sum_{j=1}^{N}\left(\mathbf{w}_{k, j}-\mu\right)^{2}}
+\end{array}</script><h4 id="Decoder"><a href="#Decoder" class="headerlink" title="Decoder"></a>Decoder</h4><script type="math/tex; mode=display">
+\mathbf{M}_{i}=\left[\mathbf{m}_{i, 1}, \ldots, \mathbf{m}_{i, K}\right] \in \mathbb{R}^{K \times N} \\ \hat{\mathbf{W}}= \left[\hat{\mathbf{w}}_{1}, \ldots, \hat{\mathbf{w}}_{K}\right] \in \mathbb{R}^{K \times N}\\
+\mathbf{D}_{i}=\left[\mathbf{d}_{i, 1}, \ldots, \mathbf{d}_{i, K}\right] \in \mathbb{R}^{K \times N}</script><script type="math/tex; mode=display">
+\mathbf{D}_{i}=\mathbf{W} \odot \mathbf{M}_{i}\\
+\mathbf{W}= \left[\mathbf{w}_{1}, \ldots, \mathbf{w}_{K}\right] \in \mathbb{R}^{K \times N}\\</script><p>记住这里的$\mathbf{M}<em>{i}$是作用在$\mathbf{W}$上，而不是$\hat{\mathbf{W}}$。我们缩放恢复的信号以逆转$L^{2}$归一化的影响。 将所有段的$x</em>{k}$恢复并串联在一起，可为每个信号源重建整个信号。</p>
+<script type="math/tex; mode=display">
+\mathbf{S}_{i}=\mathbf{D}_{i} \mathbf{B}\\
+s_{i}(t)=\left[\mathbf{S}_{i, k}\right], \quad k=1,2, \ldots, K</script><h4 id="Training-objective"><a href="#Training-objective" class="headerlink" title="Training objective"></a>Training objective</h4><p>SI-SNR(SI-SDR)</p>
+<script type="math/tex; mode=display">
+\begin{array}{c}
+\text { s }_{\text {target}}=\frac{\langle\hat{\mathbf{s}}, \mathbf{s}\rangle \mathbf{s}}{\|\mathbf{s}\|^{2}} \\
+\mathbf{e}_{\text {noise}}=\hat{\mathbf{s}}-\mathbf{s}_{\text {target}} \\
+\text {SI-SNR }:=10 \log _{10} \frac{\| \mathbf{s}_{\text {target}}\|}{\left\|\mathbf{e}_{\text {noise}}\right\|^{2}}
+\end{array}</script><p>$\text{where }  \hat{\mathbf{s}} \in \mathbb{R}^{1 \times t}  \text{ and }  \mathbf{s} \in \mathbb{R}^{1 \times t}  \text{ are the estimated and target clean sources respectively}, \text{ $t$  denotes the length of the signals.}$</p>
+<h2 id="论文地址"><a href="#论文地址" class="headerlink" title="论文地址"></a>论文地址</h2><blockquote>
+<p><a href="https://arxiv.org/pdf/1711.00541.pdf" target="_blank" rel="noopener">https://arxiv.org/pdf/1711.00541.pdf</a></p>
+</blockquote>
+<h2 id="代码地址"><a href="#代码地址" class="headerlink" title="代码地址"></a>代码地址</h2><blockquote>
+<p><a href="https://github.com/JusperLee/Conv-TasNet" target="_blank" rel="noopener">https://github.com/JusperLee/Conv-TasNet</a></p>
+</blockquote>
+
       
 
       
@@ -191,7 +261,29 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">speech separation</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/TasNet//" class="article-tag-list-link color2">TasNet</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
 
@@ -241,7 +333,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=https://pileiblog.cn/categories/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=https://pileiblog.cn/2020/08/03/TasNet/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -253,6 +345,16 @@
 </article>
 
   
+<nav id="article-nav">
+  
+  
+    <a href="/2020/08/02/DeepClustering/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Deep Clustering</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -275,7 +377,7 @@
   
   <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="" data-title="categories" data-url="https://pileiblog.cn/categories/index.html"></div>
+	<div class="ds-thread" data-thread-key="TasNet" data-title="TasNet" data-url="https://pileiblog.cn/2020/08/03/TasNet/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
@@ -298,8 +400,8 @@
   <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
 <script>
   var cloudTieConfig = {
-    url: "https://pileiblog.cn/categories/index.html", 
-    sourceId: "",
+    url: "https://pileiblog.cn/2020/08/03/TasNet/", 
+    sourceId: "TasNet",
     productKey: "flase",
     target: "cloud-tie-wrapper"
   };
@@ -362,7 +464,7 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
