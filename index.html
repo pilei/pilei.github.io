@@ -59,7 +59,7 @@
 			
 				<li><a href="http://pileiblog.cn/2020/07/29/PiLei/">傻逼才会看这个Blog</a></li>
 	        
-		总文章数 6
+		总文章数 7
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
@@ -137,6 +137,124 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-PIT-and-uPIT" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/08/PIT-and-uPIT/">PIT_and_uPIT</a>
+    </h1>
+  
+
+        
+        <a href="/2020/08/08/PIT-and-uPIT/" class="archive-article-date">
+  	<time datetime="2020-08-07T22:08:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-08-08</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="pit-and-upit论文阅读"><a class="markdownIt-Anchor" href="#pit-and-upit论文阅读"></a> PIT and uPIT论文阅读</h1>
+<h2 id="pit"><a class="markdownIt-Anchor" href="#pit"></a> PIT</h2>
+<p>与其他多分类回归问题和deep clustering（DPCL）不同，PIT直接使用最小化分离误差（minimizes the separation error）</p>
+<p>独立于说话者的多speaker语音分离的难点在于：the label ambiguity 和 permutation problem</p>
+        
+          <a class="article-more-a" href="/2020/08/08/PIT-and-uPIT/#more">I Love LQ >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">speech separation</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/PIT-and-uPIT//" class="article-tag-list-link color3">PIT and uPIT</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/08/08/PIT-and-uPIT/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+
+
+<section id="comments" class="comments">
+  <style>
+    .comments{margin:30px;padding:10px;background:#fff}
+    @media screen and (max-width:800px){.comments{margin:auto;padding:10px;background:#fff}}
+  </style>
+  <div id="vcomment" class="comment"></div> 
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+   var notify = 'true' == true ? true : false;
+   var verify = 'false' == true ? true : false;
+    window.onload = function() {
+        new Valine({
+            el: '.comment',
+            notify: notify,
+            verify: verify,
+            app_id: "NYFbQQ2UQpUdlfBfMObXmYiM-gzGzoHsz",
+            app_key: "FzeKxyVJBHeS7LCGeM3zhOEe",
+            placeholder: "Just go go",
+            avatar:"mm"
+        });
+    }
+</script>
+  </section>
+
+
+  
     <article id="post-Conv-TasNet" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -158,6 +276,12 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="conv-tasnet-surpassing-ideal-timefrequency-magnitude-masking-for-speech-separation论文阅读"><a class="markdownIt-Anchor" href="#conv-tasnet-surpassing-ideal-timefrequency-magnitude-masking-for-speech-separation论文阅读"></a> Conv-TasNet: Surpassing Ideal Time–Frequency Magnitude Masking for Speech Separation论文阅读</h1>
+<h2 id="tasnet的缺点"><a class="markdownIt-Anchor" href="#tasnet的缺点"></a> TasNet的缺点</h2>
+<ol>
+<li>首先，在编码器中选择较小的内核尺寸（即波形段的长度）会增加编码器输出的长度，这使LSTM的训练变得难以管理。</li>
+<li>其次，深度LSTM网络中的大量参数极大地增加了其计算成本，并限制了其在低资源，低功耗平台（例如可穿戴式听力设备）中的适用性。</li>
+<li>第三个问题是LSTM网络的时间依赖性过长，通常会导致分离精度不一致，例如，更改Mixture的起点时。</li>
+</ol>
         
           <a class="article-more-a" href="/2020/08/04/Conv-TasNet/#more">I Love LQ >></a>
         
